@@ -1,15 +1,15 @@
-#ifndef CondFormats_PPSDetGeomDesc_h
-#define CondFormats_PPSDetGeomDesc_h
+#ifndef CondFormats_PDetGeomDesc_h
+#define CondFormats_PDetGeomDesc_h
 
 #include "CondFormats/Serialization/interface/Serializable.h"
 
 #include <vector>
 #include <string>
 
-class PPSDetGeomDesc {
+class PDetGeomDesc {
 public:
-  PPSDetGeomDesc(){};
-  ~PPSDetGeomDesc(){};
+  PDetGeomDesc(){};
+  ~PDetGeomDesc(){};
 
   struct Item {
     // Translation
