@@ -26,7 +26,7 @@ public:
     COND_SERIALIZABLE;
   };
 
-  std::vector<Item> container_;
+  std::vector<Item> _container;
 
   COND_SERIALIZABLE;
 };

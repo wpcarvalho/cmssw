@@ -15,6 +15,8 @@
 #include "DetectorDescription/Core/interface/DDFilteredView.h"
 #include "DetectorDescription/Core/interface/DDSolid.h"
 
+#include "CondFormats/GeometryObjects/interface/PDetGeomDesc.h"
+
 //#include "DataFormats/CTPPSAlignment/interface/RPAlignmentCorrectionData.h"
 #include "CondFormats/CTPPSReadoutObjects/interface/CTPPSRPAlignmentCorrectionData.h"
 
@@ -34,6 +36,28 @@ DetGeomDesc::DetGeomDesc(DDFilteredView* fv)
   std::size_t found = sensor_name.find(DDD_CTPPS_PIXELS_SENSOR_NAME);
   if (found != std::string::npos && sensor_name.substr(found - 4, 3) == DDD_CTPPS_PIXELS_SENSOR_TYPE_2x2) {
     m_sensorType = DDD_CTPPS_PIXELS_SENSOR_TYPE_2x2;
+  }
+}
+
+//----------------------------------------------------------------------------------------------------
+
+DetGeomDesc::DetGeomDesc(PDetGeomDesc* pd) {
+  for (auto i : pd->_container) {
+    
+    DetGeomDesc* gd = new DetGeomDesc();
+    
+    gd->setTranslation(i._dx,i._dy,i._dz);
+    gd->setRotation(i._a11,i._a21,i._a31,
+                    i._a12,i._a22,i._a32,
+                    i._a13,i._a23,i._a33);
+    gd->setName(i._name);
+    gd->setParams(i._params);
+    gd->setGeographicalID(i._geographicalID);
+    gd->setCopyno(i._copy);
+    gd->setParentZPosition(i._z);
+    gd->setSensorType(i._sensorType);
+    
+    this->addComponent(gd);
   }
 }
 
