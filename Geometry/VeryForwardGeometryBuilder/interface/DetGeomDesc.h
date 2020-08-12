@@ -118,6 +118,8 @@ private:
 
   Container m_container;
   float m_z;
+
+  bool m_isOldDD;
 };
 
 #endif

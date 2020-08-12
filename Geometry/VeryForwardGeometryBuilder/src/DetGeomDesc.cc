@@ -47,7 +47,8 @@ DetGeomDesc::DetGeomDesc(DDFilteredView* fv)
     m_params(((fv->logicalPart()).solid()).parameters()),
     m_isABox(fv->shape() == DDSolidShape::ddbox),
     m_sensorType(""),
-    m_z(fv->geoHistory().back().absTranslation().z())
+    m_z(fv->geoHistory().back().absTranslation().z()),
+    m_isOldDD(true)
 {
   std::string sensor_name = fv->geoHistory().back().logicalPart().name().fullname();
   std::size_t found = sensor_name.find(DDD_CTPPS_PIXELS_SENSOR_NAME);
@@ -67,7 +68,8 @@ DetGeomDesc::DetGeomDesc(const cms::DDFilteredView& fv, const cms::DDSpecParRegi
     m_isABox(fv.isABox()),
     m_sensorType(computeSensorType(fv.path(), allSpecParSections)),
     m_geographicalID(computeDetID(fv)),
-    m_z(fv.translation().z() / 1._mm)  // Convert cm (DD4hep) to mm (legacy)
+    m_z(fv.translation().z() / 1._mm),  // Convert cm (DD4hep) to mm (legacy)
+    m_isOldDD(false)
 {}
 
 
@@ -101,9 +103,11 @@ DiamondDimensions DetGeomDesc::getDiamondDimensions() const {
   // Convert parameters units from cm (DD4hep standard) to mm (expected by PPS reco software).
   // This implementation is customized for the diamond sensors, which are represented by the 
   // Box shape parameterized by x, y and z half width.
+
   DiamondDimensions parameters;
   if (isABox()) {
-    parameters = { m_params[0] / 1._mm, m_params[1] / 1._mm, m_params[2] / 1._mm };   
+    const double factor = (m_isOldDD ? 1. : 1./1._mm);
+    parameters = { m_params.at(0)*factor, m_params.at(1)*factor, m_params.at(2)*factor };
   }
   else {
     edm::LogError("DetGeomDesc::getDiamondDimensions is not called on a box, for solid ")
