@@ -41,58 +41,64 @@ class CTPPSRPAlignmentCorrectionData;
  *
  **/
 
+struct DiamondDimensions {
+  double xHalfWidth;
+  double yHalfWidth;
+  double zHalfWidth;
+};
+
 class DetGeomDesc {
 public:
   using Container = std::vector<DetGeomDesc*>;
   using RotationMatrix = ROOT::Math::Rotation3D;
   using Translation = ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>>;
 
-  ///Default constructors
+  // Default
   DetGeomDesc() {};
 
-  ///Constructors to be used when looping over DDD
+  // Constructor (old DD)
   DetGeomDesc(DDFilteredView* fv);
 
-  ///Constructor from DD4Hep DDFilteredView
+  // Constructor from DD4Hep DDFilteredView
   DetGeomDesc(const cms::DDFilteredView& fv, const cms::DDSpecParRegistry& allSpecParSections);
 
-  /// copy constructor and assignment operator
   DetGeomDesc(const DetGeomDesc&);
   DetGeomDesc& operator=(const DetGeomDesc&);
-
-  /// destructor
   virtual ~DetGeomDesc();
 
-  /// ID stuff
-  void setGeographicalID(DetId id) { m_geographicalID = id; }
-  DetId geographicalID() const { return m_geographicalID; }
-
-  /// access to the tree structure
-  Container components() const;
-  float parentZPosition() const { return m_z; }
-
-  /// components (children) management
-  void addComponent(DetGeomDesc*);
-  bool isLeaf() const { return m_container.empty(); }
-
-  /// geometry information
-  RotationMatrix rotation() const { return m_rot; }
-  Translation translation() const { return m_trans; }
+  // general info
   const std::string& name() const { return m_name; }
   int copyno() const { return m_copy; }
-  const std::string& sensorType() const { return m_sensorType; }
-  std::vector<double> getDiamondWidth() const;
-  
-  // Method params() is left for general access to solid shape parameters but should be used 
+
+  // placement info
+  Translation translation() const { return m_trans; }
+  RotationMatrix rotation() const { return m_rot; }
+
+  // shape info
+  // params() is left for general access to solid shape parameters, but should be used 
   // only with great care, for two reasons: 1. order of parameters may possibly change from 
   // a version to another of DD4hep; 2. length parameters unit is cm while PPS uses mm.    
   std::vector<double> params() const { return m_params; }
+  bool isABox() const { return m_isABox; }
+  DiamondDimensions getDiamondDimensions() const;
 
-  /// alignment
+  // sensor type
+  const std::string& sensorType() const { return m_sensorType; }
+ 
+  // ID info
+  void setGeographicalID(DetId id) { m_geographicalID = id; }
+  DetId geographicalID() const { return m_geographicalID; }
+
+  // components (children) management
+  Container components() const;
+  float parentZPosition() const { return m_z; }
+  void addComponent(DetGeomDesc*);
+  bool isLeaf() const { return m_container.empty(); }
+
+  // alignment
   void applyAlignment(const CTPPSRPAlignmentCorrectionData&);
 
 private:
-//  DetGeomDesc() {}
   void deleteComponents();      /// deletes just the first daughters
   void deepDeleteComponents();  /// traverses the tree and deletes all nodes.
   void clearComponents() { m_container.resize(0); }
@@ -101,15 +107,19 @@ private:
   DetId computeDetID(const cms::DDFilteredView& fv) const;
   std::string computeSensorType(const std::string& nodePath, const cms::DDSpecParRegistry& allSpecParSections);
 
-  Container m_container;
+  std::string m_name;
+  int m_copy;
   Translation m_trans;
   RotationMatrix m_rot;
-  std::string m_name;
   std::vector<double> m_params;
-  DetId m_geographicalID;
-  int m_copy;
-  float m_z;
+  bool m_isABox;
   std::string m_sensorType;
+  DetId m_geographicalID;
+
+  Container m_container;
+  float m_z;
+
+  bool m_isOldDD;
 };
 
 #endif
