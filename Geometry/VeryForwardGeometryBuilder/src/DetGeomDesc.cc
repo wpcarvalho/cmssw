@@ -75,6 +75,31 @@ DetGeomDesc::DetGeomDesc(const DetGeomDesc& ref, CopyMode cm) {
   m_z = ref.m_z;
 }
 
+// Constructor from DB object PDetGeomDesc::Item
+DetGeomDesc::DetGeomDesc(const PDetGeomDesc::Item& item) 
+    : m_name(item.name_),
+      m_copy(item.copy_),
+      m_isDD4hep(true),
+      m_params(item.params_),  // default unit from DD4hep (cm)
+      m_isABox(true),
+      m_diamondBoxParams(DiamondDimensions{0, 0, 0}),  // converted from cm (DD4hep) to mm
+      m_sensorType(item.sensorType_),
+      m_geographicalID(item.geographicalID_),
+      m_z(item.z_)  // converted from cm (DD4hep) to mm
+{
+  Translation trans(item.dx_, item.dy_, item.dz_);
+  m_trans = trans;
+  RotationMatrix rot(item.axx_, item.axy_, item.axz_, item.ayx_, item.ayy_, item.ayz_, item.azx_, item.azy_, item.azz_);
+  m_rot = rot;
+}
+
+DetGeomDesc::DetGeomDesc(const PDetGeomDesc& pd) {
+  for (auto i : pd.container_) {
+    DetGeomDesc* gd = new DetGeomDesc(i);
+    this->addComponent(gd);
+  }
+}
+
 DetGeomDesc::~DetGeomDesc() { deepDeleteComponents(); }
 
 void DetGeomDesc::addComponent(DetGeomDesc* det) { m_container.emplace_back(det); }

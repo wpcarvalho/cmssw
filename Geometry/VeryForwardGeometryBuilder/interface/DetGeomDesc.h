@@ -17,6 +17,7 @@
 
 #include "DetectorDescription/Core/interface/DDFilteredView.h"
 #include "DetectorDescription/DDCMS/interface/DDFilteredView.h"
+#include "CondFormats/GeometryObjects/interface/PDetGeomDesc.h"
 
 #include "DataFormats/DetId/interface/DetId.h"
 #include <Math/Rotation3D.h>
@@ -57,6 +58,10 @@ public:
   DetGeomDesc(const DDFilteredView& fv);
   // Constructor from DD4Hep DDFilteredView
   DetGeomDesc(const cms::DDFilteredView& fv);
+  // Constructor from DB object PDetGeomDesc
+  DetGeomDesc(const PDetGeomDesc& gd);
+  // Constructor from DB object PDetGeomDesc::Item
+  DetGeomDesc(const PDetGeomDesc::Item& item);
 
   virtual ~DetGeomDesc();
 
