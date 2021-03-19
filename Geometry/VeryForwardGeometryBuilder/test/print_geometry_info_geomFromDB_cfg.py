@@ -16,7 +16,8 @@ process.MessageLogger = cms.Service("MessageLogger",
 process.load("CondCore.CondDB.CondDB_cfi")
 # input database (in this case local sqlite file)
 # process.CondDB.connect = 'sqlite_file:../../CondTools/Geometry/PPSGeometry_oldDD4hep_multiIOV.db'
-process.CondDB.connect = 'sqlite_file:PPSGeometry_DD4hep_multiIOV.db'
+process.CondDB.connect = 'sqlite_file:../../CondTools/Geometry/test/writehelpers/PPSRECO_Geometry.db'
+# process.CondDB.connect = 'sqlite_file:PPSRECO_Geometry.db'
 
 process.PoolDBESSource = cms.ESSource("PoolDBESSource",
     process.CondDB,
@@ -24,7 +25,8 @@ process.PoolDBESSource = cms.ESSource("PoolDBESSource",
     toGet = cms.VPSet(
       cms.PSet(
         record = cms.string('VeryForwardIdealGeometryRecord'),
-        tag = cms.string("PPSGeometry_test")
+        tag = cms.string("PPSRECO_Geometry_2021_113YV1")
+#        tag = cms.string("PPSGeometry_test")
       )
     )
 )
