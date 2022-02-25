@@ -104,4 +104,6 @@
     <class name="std::pair<unsigned int, PPSAlignmentConfiguration::SelectionRange>"/>
     <class name="PPSAlignmentConfiguration" class_version="0"/>
 
+    <class name="LHCInfoForPPS" class_version="0"/>
+
   </lcgdict> 
