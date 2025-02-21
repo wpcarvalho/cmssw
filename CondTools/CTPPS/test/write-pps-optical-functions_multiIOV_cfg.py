@@ -37,9 +37,11 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
     )
 )
 
+# Implement "null" optical functions 
 dummy_opt_functions = cms.PSet(
-  dummy = cms.bool(True),
+  dummyFunction = cms.bool(True),
   validityRange = cms.EventRange("0:min - 1:max"),
+  # Use any file here, as long as it is an existing file
   opticalFunctions = cms.VPSet(
     cms.PSet( xangle = cms.double(185), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_preTS2/version2/185urad.root") )
   ),
@@ -49,7 +51,7 @@ dummy_opt_functions = cms.PSet(
 )
 
 config_base_2016_preTS2 = cms.PSet(
-  dummy = cms.bool(False),
+  dummyFunction = cms.bool(False),
   validityRange = cms.EventRange("273725:min - 280385:max"),
   opticalFunctions = cms.VPSet(
     cms.PSet( xangle = cms.double(185), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_preTS2/version2/185urad.root") )
@@ -64,7 +66,7 @@ config_base_2016_preTS2 = cms.PSet(
 )
 
 config_base_2016_postTS2 = cms.PSet(
-  dummy = cms.bool(False),
+  dummyFunction = cms.bool(False),
   validityRange = cms.EventRange("282730:min - 284044:max"),
   opticalFunctions = cms.VPSet(
     # fake placeholder at the moment
@@ -80,7 +82,7 @@ config_base_2016_postTS2 = cms.PSet(
 )
 
 config_base_2017 = cms.PSet(
-  dummy = cms.bool(False),
+  dummyFunction = cms.bool(False),
   # pre-TS2 begin to Jul alig. run
   validityRange = cms.EventRange("297046:min - 297723:max"),
   opticalFunctions = cms.VPSet(
@@ -105,7 +107,7 @@ config_base_2017 = cms.PSet(
 )
 
 config_base_2018 = cms.PSet(
-  dummy = cms.bool(False),
+  dummyFunction = cms.bool(False),
   # beginning to 90m runs
   validityRange = cms.EventRange("314747:min - 319077:max"),
   opticalFunctions = cms.VPSet(
@@ -146,7 +148,7 @@ optics_2018 = cms.PSet(
 '''
 
 config_base_2022 = cms.PSet(
-  dummy = cms.bool(False),
+  dummyFunction = cms.bool(False),
   validityRange = cms.EventRange("343890:min - 999999:max"),
   opticalFunctions = cms.VPSet(
     cms.PSet( xangle = cms.double(144.974), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2022/version_pre1/144.974urad.root") ),

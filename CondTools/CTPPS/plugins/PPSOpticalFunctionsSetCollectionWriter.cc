@@ -4,9 +4,7 @@
 //
 // Description: Test analyzer for PPS optical functions condition data
 //
-//              Simple analyzer that writes one CTPPSOpticsRcd record into a sql
-//              database file, as a test of offline conditions implementation.
-//              Another analyzer is then used to retrieve these conditions.
+//              Writes one CTPPSOpticsRcd record into a sql database file.
 //
 // Original Author:  Wagner De Paula Carvalho
 //         Created:  Wed, 20 Mar 2019
@@ -44,15 +42,17 @@ class PPSOpticalFunctionsSetCollectionWriter : public edm::one::EDAnalyzer<>
   private:
     void analyze(const edm::Event&, const edm::EventSetup&) override;
 
+    // Introduced to allow "null" optical functions to be implemented for some IOV ranges
+    bool m_dummyFunction;
+
     edm::EventRange m_validityRange;
-    bool m_dummy;
 
     struct FileInfo
     {
       double xangle;
       std::string fileName;
     };
-    // std::vector<FileInfo> m_fileInfo;
+    std::vector<FileInfo> m_fileInfo;
 
     struct RPInfo
     {
@@ -76,13 +76,13 @@ PPSOpticalFunctionsSetCollectionWriter::PPSOpticalFunctionsSetCollectionWriter(c
 {
   for (const auto &pall : conf.getParameter<std::vector<edm::ParameterSet>>("opticalFunctionsEras"))
   {
-    m_dummy = pall.getParameter<bool>("dummy");
+    m_dummyFunction = pall.getParameter<bool>("dummyFunction");
     m_validityRange = pall.getParameter<edm::EventRange>("validityRange");
     edm::LogInfo("PPSOpticalFunctionsSetCollectionWriter::analyze") 
       << " startRun = " << m_validityRange.startRun() << " , startLumi = " << m_validityRange.startLumi()  
       << " endRun = " << m_validityRange.endRun() << " , endLumi = " << m_validityRange.endLumi() ; 
     
-    std::vector<FileInfo> m_fileInfo;
+    m_fileInfo.clear();
     for (const auto &pset : pall.getParameter<std::vector<edm::ParameterSet>>("opticalFunctions"))
     {
       const double &xangle = pset.getParameter<double>("xangle");
@@ -100,7 +100,7 @@ PPSOpticalFunctionsSetCollectionWriter::PPSOpticalFunctionsSetCollectionWriter(c
       m_rpInfo.emplace(rpId, entry);
     }
     
-    m_allInfo.push_back({m_dummy , m_validityRange , m_fileInfo , m_rpInfo});
+    m_allInfo.push_back({m_dummyFunction , m_validityRange , m_fileInfo , m_rpInfo});
   }
 }
 
@@ -109,15 +109,11 @@ PPSOpticalFunctionsSetCollectionWriter::PPSOpticalFunctionsSetCollectionWriter(c
 void PPSOpticalFunctionsSetCollectionWriter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   for (const auto &ai : m_allInfo) {
-  //LHCOpticalFunctionsSetCollection *p = new LHCOpticalFunctionsSetCollection();
   LHCOpticalFunctionsSetCollection p;
-  
   cond::Time_t iov = ai.validity.startRun();
-  
     for (const auto &fi : ai.files)
     {
       std::unordered_map<unsigned int, LHCOpticalFunctionsSet> xa_data;
-
       if(!ai.dummy) {
         std::stringstream outstr;
         outstr << "\n xAngle = " << fi.xangle;
@@ -132,11 +128,10 @@ void PPSOpticalFunctionsSetCollectionWriter::analyze(const edm::Event& iEvent, c
         edm::LogInfo("PPSOpticalFunctionsSetCollectionWriter::analyze") << outstr.str();
       }
     }
-  
     // Write to database or sqlite file
     edm::Service<cond::service::PoolDBOutputService> poolDbService;
     if(poolDbService.isAvailable())
-      poolDbService->writeOneIOV( p, iov, "CTPPSOpticsRcd"  );
+      poolDbService->writeOneIOV( p,iov,"CTPPSOpticsRcd");
     else
       throw std::runtime_error("PoolDBService required.");
   }

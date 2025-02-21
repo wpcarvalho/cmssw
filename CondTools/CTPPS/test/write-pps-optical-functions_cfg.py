@@ -6,7 +6,7 @@ process = cms.Process("writePPSOpticalFunctions")
 process.load("CondCore.CondDB.CondDB_cfi")
 
 # output database (in this case local sqlite file)
-process.CondDB.connect = 'sqlite_file:PPSOpticalFunctions_2025_v2.db'  #  with vertical pots
+process.CondDB.connect = 'sqlite_file:PPSOpticalFunctions.db'
 
 process.MessageLogger = cms.Service("MessageLogger",
                                     cout = cms.untracked.PSet(threshold = cms.untracked.string('INFO')),
@@ -35,7 +35,7 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
 process.cond_maker = cms.EDAnalyzer("PPSOpticalFunctionsSetCollectionWriter",
   opticalFunctionsEras = cms.VPSet(
     cms.PSet(
-      dummy = cms.bool(False),
+      dummyFunction = cms.bool(False),
       validityRange = cms.EventRange("1:min - 999999:max"),
       opticalFunctions = cms.VPSet(
         # Check the appropriate source root files at and copy them to the working area:
