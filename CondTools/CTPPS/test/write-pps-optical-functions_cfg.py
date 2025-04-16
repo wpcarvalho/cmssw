@@ -51,8 +51,7 @@ process.cond_maker = cms.EDAnalyzer("PPSOpticalFunctionsSetCollectionWriter",
         cms.PSet( rpId = cms.uint32(2014838784), dirName = cms.string("XRPH_D6L5_B2"), z = cms.double(-21255.0) ),  # RP 003, pixel
         cms.PSet( rpId = cms.uint32(2056257536), dirName = cms.string("XRPH_A6L5_B2"), z = cms.double(-21507.8) ),  # RP 022, diamond
         cms.PSet( rpId = cms.uint32(2054160384), dirName = cms.string("XRPH_E6L5_B2"), z = cms.double(-21570.0) ),  # RP 016, diamond
-#        cms.PSet( rpId = cms.uint32(2023227392), dirName = cms.string("XRPH_B6L5_B2"), z = cms.double(-21955.0) ),  # RP 023, pixel
-        cms.PSet( rpId = cms.uint32(2025227392), dirName = cms.string("XRPH_B6L5_B2"), z = cms.double(-21955.0) ),  # RP 023, pixel
+        cms.PSet( rpId = cms.uint32(2023227392), dirName = cms.string("XRPH_B6L5_B2"), z = cms.double(-21955.0) ),  # RP 023, pixel
         # Verticals (2 pots per scoring plane)
         cms.PSet( rpId = cms.uint32(1979711488), dirName = cms.string("XRPV_C6L5_B2"), z = cms.double(-20337.7) ),  # RP 000, strip
         cms.PSet( rpId = cms.uint32(1980235776), dirName = cms.string("XRPV_C6L5_B2"), z = cms.double(-20337.7) ),  # RP 001, strip
